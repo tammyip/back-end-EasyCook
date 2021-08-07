@@ -10,6 +10,6 @@ class Plan(db.Model):
     def to_json(self):
         return {
             "plan_id": self.plan_id,
-            "title": self.title,
+            "plan_name": self.plan_name,
             "user_id": self.user_id,
         }
