@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify, make_response
+# from flask import Flask, session
+# from flask_session import Session
 from app import db
 from app.models.user import User
 from app.models.recipe import Recipe
 from app.models.plan import Plan
-from sqlalchemy.sql import exists
+# from sqlalchemy.sql import exists
 
 user_bp = Blueprint("user", __name__, url_prefix="/user")
 recipe_bp = Blueprint("recipes", __name__, url_prefix="/favorites")
@@ -56,7 +58,7 @@ def add_recipe_to_user(user_id):
     return jsonify(new_recipe_in_user.to_json()), 200
 
 # Delete a recipe in Favorites
-@user_bp.route("/<user_id>/favorites/<recipe_id>", methods=["DELETE"], strict_slashes=False)
+@recipe_bp.route("/<recipe_id>", methods=["DELETE"], strict_slashes=False)
 def delete_recipe(recipe_id):
     recipe = Recipe.query.get_or_404(recipe_id)
     db.session.delete(recipe)
