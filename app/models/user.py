@@ -10,6 +10,7 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
     name = db.Column(db.String)
     email = db.Column(db.String)  
+    #back_refernce meaning: creates a column in the Recipe table called "user"
     recipes = db.relationship("Recipe", backref="user", lazy=True)
     plans = db.relationship("Plan", backref="user", lazy=True)
 

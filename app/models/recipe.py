@@ -6,8 +6,8 @@ class Recipe(db.Model):
     title = db.Column(db.String)
     image = db.Column(db.String)
     url = db.Column(db.String)
+    # a foreign key column refers to the primary key of the other table
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=True)
-    # plan_id = db.Column(db.Integer, db.ForeignKey('plan.plan_id'), nullable=True)
 
     def to_json(self):
         return {
