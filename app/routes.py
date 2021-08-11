@@ -32,14 +32,14 @@ def create_user():
     user = User.query.filter_by(email=request_body["email"]).first()
     status_code = 400
     if user:
-        # if it's an existing user
+        # if it's an existing user, just return status_code 200, no adding to database
         status_code = 200
     else:
         user = User(name=request_body["name"],
                         email=request_body["email"])  
         db.session.add(user)
         db.session.commit()
-        # if it's a new user
+        # if it's a new user, return status_code 201
         status_code =201
     return jsonify(user_id=user.user_id, name=user.name, email=user.email), status_code
 
