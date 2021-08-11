@@ -29,15 +29,19 @@ def create_user():
         return jsonify(details = f'Invalid data'), 400
 
     # if session.query(User.query.filter(User.id == 1).exists()).scalar() is None:
-    user_count = User.query.filter_by(email=request_body["email"]).count()
-    if user_count > 0:
-        return "user already in database, cannot be added"
+    user = User.query.filter_by(email=request_body["email"]).first()
+    status_code = 400
+    if user:
+        # if it's an existing user
+        status_code = 200
     else:
-        new_user = User(name=request_body["name"],
+        user = User(name=request_body["name"],
                         email=request_body["email"])  
-        db.session.add(new_user)
+        db.session.add(user)
         db.session.commit()
-        return jsonify(user_id=new_user.user_id, name=new_user.name, email=new_user.email), 201
+        # if it's a new user
+        status_code =201
+    return jsonify(user_id=user.user_id, name=user.name, email=user.email), status_code
 
 # Add a recipe to Favorites
 @user_bp.route("/<user_id>/favorites", methods=["POST"], strict_slashes=False)
