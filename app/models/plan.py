@@ -6,6 +6,7 @@ class Plan(db.Model):
     plan_name = db.Column(db.String)
     # a foreign key column refers to the primary key of the other table
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=True)
+    recipes = db.relationship("Recipe", backref="plan", lazy=True)
 
     def to_json(self):
         return {
