@@ -51,17 +51,23 @@ def create_user():
 def add_recipe_to_user(user_id):
     request_body = request.get_json()
     if ("label" not in request_body
-    or "image" not in request_body
-    or "url" not in request_body):  
+        or "image" not in request_body
+        or "url" not in request_body):  
         return jsonify(details = f'Invalid data'), 400
+    
+    recipe = Recipe.query.filter_by(url=request_body["url"]).first()
 
-    new_recipe_in_user = Recipe(title=request_body["label"],
-                                image=request_body["image"],
-                                url=request_body["url"],
-                                user_id=user_id)
+    if recipe:
+        return jsonify(details = f'recipe already in Favorites')
+    else:
+        new_recipe_in_user = Recipe(title=request_body["label"],
+                                    image=request_body["image"],
+                                    url=request_body["url"],
+                                    user_id=user_id)
 
-    db.session.add(new_recipe_in_user)
-    db.session.commit()
+        db.session.add(new_recipe_in_user)
+        db.session.commit()
+
     return jsonify(new_recipe_in_user.to_json()), 200
 
 # Delete a recipe in Favorites
@@ -72,7 +78,7 @@ def delete_recipe(recipe_id):
     db.session.commit()
     return jsonify(recipe = f'Recipe {recipe.recipe_id} "{recipe.title}" successfully deleted')
 
-### View all recipes saved in Favorites by an user ###
+# View all recipes saved in Favorites by an user
 @user_bp.route("/<user_id>/favorites", methods=["GET"], strict_slashes=False)
 def view_recipes_in_favorites(user_id):
 
@@ -81,6 +87,15 @@ def view_recipes_in_favorites(user_id):
     recipes = user.recipes # [{}, {}, {}]
     recipes_in_favorites = [recipe.to_json() for recipe in recipes if recipes]
     return jsonify(recipes=recipes_in_favorites)
+
+# Delete all recipes saved in Favorites by an user
+@recipe_bp.route("", methods=["DELETE"], strict_slashes=False)
+def delete_all_recipes():
+    recipes = Recipe.query.all()
+    for recipe in recipes:
+        db.session.delete(recipe)
+    db.session.commit()
+    return jsonify(board = f'All recipes successfully deleted in favorite'), 200
 
 # PLAN
 ################################################################
