@@ -1,12 +1,9 @@
 from flask import Blueprint, request, jsonify, make_response
-# from flask import Flask, session
-# from flask_session import Session
 from app import db
 from app.models import recipe
 from app.models.user import User
 from app.models.recipe import Recipe
 from app.models.plan import Plan
-# from sqlalchemy.sql import exists
 
 user_bp = Blueprint("user", __name__, url_prefix="/user")
 recipe_bp = Blueprint("recipes", __name__, url_prefix="/recipes")
@@ -160,11 +157,11 @@ def view_recipes_in_plans(plan_id):
 
 # Delete a recipe in a plan
 @recipe_bp.route("/<recipe_id>", methods=["DELETE"], strict_slashes=False)
-def delete_card(recipe_id):
+def delete_recipe(recipe_id):
     recipe = Recipe.query.get_or_404(recipe_id)
     db.session.delete(recipe)
     db.session.commit()
-    return jsonify(card = f'Recipe {recipe.recipe_id} "{recipe.title}" successfully deleted')
+    return jsonify(recipe = f'Recipe {recipe.recipe_id} "{recipe.title}" successfully deleted')
 
 # Delete a plan
 @plan_bp.route("/<plan_id>", methods=["DELETE"], strict_slashes=False)
